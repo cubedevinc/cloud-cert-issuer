@@ -1,6 +1,6 @@
-module github.com/cert-manager/webhook-example
+module github.com/cubedevinc/cloud-dns-solver
 
-go 1.22.0
+go 1.23
 
 require (
 	github.com/cert-manager/cert-manager v1.15.1

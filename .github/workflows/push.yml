@@ -1,0 +1,35 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - 'master'
+  pull_request:
+
+env:
+  DOCKER_IMAGE_PATH: us-docker.pkg.dev/cubejs-cloud/cloud/cloud-dns-solver
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    name: Builder
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Authenticate with Google Cloud
+        run: echo "${{ secrets.GCP_SERVICE_ACCOUNT_KEY_JSON }}" | base64 -d | gcloud auth activate-service-account --key-file=-
+        env:
+          CLOUDSDK_CORE_DISABLE_PROMPTS: 1
+      - name: Configure Docker to use gcloud as a credential helper
+        run: gcloud auth configure-docker us-docker.pkg.dev
+        env:
+          CLOUDSDK_CORE_DISABLE_PROMPTS: 1
+      - name: Build docker image
+        run: |
+          docker build -t $DOCKER_IMAGE_PATH:latest .
+      - name: Push docker Image
+        run: |
+          docker push $DOCKER_IMAGE_PATH:latest
+
