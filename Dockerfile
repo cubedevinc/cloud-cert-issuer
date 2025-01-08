@@ -17,7 +17,7 @@ RUN CGO_ENABLED=0 go build -o cloud-dns-solver -ldflags '-w -extldflags "-static
 
 FROM alpine:3.20
 
-RUN apk add --no-cache ca-certificates
+RUN apk add --no-cache ca-certificates libcap
 
 # Create a non-root user and group
 RUN addgroup -S solver && adduser -S solver -G solver
