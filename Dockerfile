@@ -19,6 +19,12 @@ FROM alpine:3.18
 
 RUN apk add --no-cache ca-certificates
 
+# Create a non-root user and group
+RUN addgroup -S solver && adduser -S solver -G solver
+
 COPY --from=build /workspace/cloud-dns-solver /usr/local/bin/cloud-dns-solver
+RUN chown solver:solver /usr/local/bin/cloud-dns-solver
+
+USER solver
 
 ENTRYPOINT ["cloud-dns-solver"]
