@@ -25,6 +25,9 @@ RUN addgroup -S solver && adduser -S solver -G solver
 COPY --from=build /workspace/cloud-dns-solver /usr/local/bin/cloud-dns-solver
 RUN chown solver:solver /usr/local/bin/cloud-dns-solver
 
+# Grant the binary the capability to bind to privileged ports
+RUN setcap 'cap_net_bind_service=+ep' /usr/local/bin/cloud-dns-solver
+
 USER solver
 
 ENTRYPOINT ["cloud-dns-solver"]
